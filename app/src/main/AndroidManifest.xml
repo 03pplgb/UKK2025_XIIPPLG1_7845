@@ -13,6 +13,30 @@
         android:theme="@style/Theme.Ukk_andika"
         tools:targetApi="31">
         <activity
+            android:name=".profile"
+            android:exported="false" />
+        <activity
+            android:name=".task_list"
+            android:exported="false" />
+        <activity
+            android:name=".History"
+            android:exported="false" />
+        <activity
+            android:name=".create_task"
+            android:exported="false" />
+        <activity
+            android:name=".welcome"
+            android:exported="false" />
+        <activity
+            android:name=".kegiatan"
+            android:exported="false" />
+        <activity
+            android:name=".register"
+            android:exported="false" />
+        <activity
+            android:name=".login"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
