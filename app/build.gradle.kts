@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.ukk_andika"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.ukk_andika"

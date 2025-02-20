@@ -13,14 +13,15 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class CreateTaskActivity : AppCompatActivity() {
+class EditTaskActivity : AppCompatActivity() {
 
     private lateinit var dbHelper: DatabaseHelper
+    private lateinit var categorySpinner: Spinner
+    private lateinit var saveButton: Button
     private lateinit var descriptionEditText: EditText
     private lateinit var dateEditText: EditText
     private lateinit var timeEditText: EditText
-    private lateinit var categorySpinner: Spinner
-    private lateinit var saveButton: Button
+    private var taskId: Int = 0
 
     private lateinit var calendar: Calendar
 
@@ -28,62 +29,83 @@ class CreateTaskActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_task)
 
+        dbHelper = DatabaseHelper(this)
+
+        taskId = intent.getIntExtra("TASK_ID", 0)
+
+        val task = dbHelper.getTaskById(taskId)
+
+        // Cek jika task null
+        if (task == null) {
+            Toast.makeText(this, "Task tidak ditemukan!", Toast.LENGTH_SHORT).show()
+            finish() // Jika task tidak ditemukan, kembali ke activity sebelumnya
+            return
+        }
+
+        // Inisialisasi views
         descriptionEditText = findViewById(R.id.descriptionEditText)
         dateEditText = findViewById(R.id.dateEditText)
         timeEditText = findViewById(R.id.timeEditText)
         categorySpinner = findViewById(R.id.categorySpinner)
         saveButton = findViewById(R.id.saveButton)
 
-        dbHelper = DatabaseHelper(this)
+        // Set data task yang ada
+        descriptionEditText.setText(task.description)
+        dateEditText.setText(task.date)
+        timeEditText.setText(task.time)
 
-        calendar = Calendar.getInstance()
-
-        // List kategori untuk spinner
+        // Kategori
         val categories = arrayOf("Pekerjaan", "Pribadi", "Olahraga", "Belajar")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = adapter
 
-        // Dialog untuk memilih tanggal
+        // Set category sesuai dengan task yang sedang diedit
+        val categoryIndex = categories.indexOf(task.category)
+        if (categoryIndex >= 0) {
+            categorySpinner.setSelection(categoryIndex)
+        }
+
+        calendar = Calendar.getInstance()
+
+        // Set listener untuk memilih tanggal
         dateEditText.setOnClickListener {
             showDatePickerDialog()
         }
 
-        // Dialog untuk memilih waktu
+        // Set listener untuk memilih waktu
         timeEditText.setOnClickListener {
             showTimePickerDialog()
         }
 
-        // Menyimpan data task
+        // Event untuk menyimpan perubahan
         saveButton.setOnClickListener {
             val description = descriptionEditText.text.toString()
             val date = dateEditText.text.toString()
             val time = timeEditText.text.toString()
             val category = categorySpinner.selectedItem.toString()
 
-            // Validasi input
             if (description.isEmpty() || date.isEmpty() || time.isEmpty()) {
                 Toast.makeText(this, "Semua kolom harus diisi!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Membuat objek Task baru
-            val newTask = Task(
-                id = 0,
+            // Membuat task baru dengan data yang sudah diedit
+            val updatedTask = Task(
+                id = taskId, // Pastikan ID tetap sama
                 description = description,
                 date = date,
                 time = time,
-                category = category,  // Tidak perlu konversi ke Boolean
-                isCompleted = false,
-                isHistory = false
+                category = category,
+                isCompleted = task.isCompleted,
+                isHistory = task.isHistory
             )
 
-            // Menyimpan task ke database
-            dbHelper.insertTask(newTask)
+            // Memperbarui task di database
+            dbHelper.updateTask(updatedTask)
 
-            // Memberikan feedback
-            Toast.makeText(this, "Tugas berhasil dibuat!", Toast.LENGTH_SHORT).show()
-            finish()  // Menutup activity setelah task berhasil disimpan
+            Toast.makeText(this, "Tugas berhasil diperbarui!", Toast.LENGTH_SHORT).show()
+            finish() // Kembali ke activity sebelumnya setelah update
         }
     }
 
@@ -95,6 +117,7 @@ class CreateTaskActivity : AppCompatActivity() {
         val datePickerDialog = DatePickerDialog(
             this,
             { _, selectedYear, selectedMonth, selectedDayOfMonth ->
+
                 calendar.set(selectedYear, selectedMonth, selectedDayOfMonth)
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                 dateEditText.setText(dateFormat.format(calendar.time))
@@ -103,6 +126,7 @@ class CreateTaskActivity : AppCompatActivity() {
             month,
             dayOfMonth
         )
+
         datePickerDialog.show()
     }
 
@@ -110,9 +134,11 @@ class CreateTaskActivity : AppCompatActivity() {
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 
+        // Membuka TimePickerDialog
         val timePickerDialog = TimePickerDialog(
             this,
             { _, selectedHour, selectedMinute ->
+
                 calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
                 calendar.set(Calendar.MINUTE, selectedMinute)
                 val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -122,6 +148,7 @@ class CreateTaskActivity : AppCompatActivity() {
             minute,
             true
         )
+
         timePickerDialog.show()
     }
 }

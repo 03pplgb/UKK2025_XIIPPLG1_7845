@@ -1,52 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@drawable/create_task"
     android:layout_height="match_parent"
-    tools:context=".create_task">
-    <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Deskripsi Task -->
+    <EditText
+        android:id="@+id/descriptionEditText"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:hint="Deskripsi Tugas"
+        android:inputType="text"
+        android:minHeight="48dp" />
 
-        <EditText
-            android:id="@+id/descriptionEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Deskripsi Kegiatan"
-            android:minHeight="48dp"
-            android:padding="10dp" />
+    <!-- Spinner Kategori -->
+    <Spinner
+        android:id="@+id/categorySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp" />
 
-        <EditText
-            android:id="@+id/dateEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Tanggal (YYYY-MM-DD)"
-            android:minHeight="48dp"
-            android:padding="10dp" />
+    <!-- Tanggal -->
+    <EditText
+        android:id="@+id/dateEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="false"
+        android:hint="Pilih Tanggal"
+        android:inputType="none"
+        android:minHeight="48dp" />
 
-        <EditText
-            android:id="@+id/timeEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Waktu (HH:MM)"
-            android:minHeight="48dp"
-            android:padding="10dp" />
+    <!-- Waktu -->
+    <EditText
+        android:id="@+id/timeEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="false"
+        android:hint="Pilih Waktu"
+        android:inputType="none"
+        android:minHeight="48dp" />
 
-        <!-- Spinner untuk memilih kategori -->
-        <Spinner
-            android:id="@+id/categorySpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp" />
-
-        <Button
-            android:id="@+id/saveTaskButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Simpan Kegiatan"/>
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Tombol Simpan -->
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Simpan" />
+</LinearLayout>
